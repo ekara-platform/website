@@ -9,7 +9,7 @@ install:
 
 script:
   - chmod +x deploy_ghpages.sh
-  - if [[ $TRAVIS_BRANCH = master ]]; then ./hugo fi
+  - if [[ $TRAVIS_BRANCH = master ]]; then ./hugo; fi
 
 after_success:
   - if [[ $TRAVIS_PULL_REQUEST = false ]] && [[ $TRAVIS_BRANCH = master ]]; then ./deploy_ghpages.sh && (curl http://www.google.com/webmasters/tools/ping?sitemap=http%3A%2F%2Fekara-platform.github.io%2Fsitemap.xml > /dev/null || :); fi
