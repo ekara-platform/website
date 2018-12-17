@@ -1,0 +1,4 @@
+baseURL = "http://ekara-platform.github.io/"
+languageCode = "en-us"
+title = "Ekara cloud platform"
+theme = "hugo-theme-learn"

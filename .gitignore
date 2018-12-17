@@ -1,0 +1,20 @@
+# Temp files
+*~
+
+# Intellij
+.idea
+*.iml
+
+# generated folders
+public/
+dev/
+beta/
+
+# node
+node_modules/
+
+# distribution pom
+distribution.pom.xml
+
+# generated static content
+/.project

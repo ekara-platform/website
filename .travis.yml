@@ -1,0 +1,15 @@
+sudo: false
+
+language: go
+
+install:
+  - wget https://github.com/gohugoio/hugo/releases/download/v0.52/hugo_0.52_Linux-64bit.tar.gz
+  - tar xzvf hugo_0.52_Linux-64bit.tar.gz
+  - chmod +x hugo
+
+script:
+  - chmod +x deploy_ghpages.sh
+  - if [[ $TRAVIS_BRANCH = master ]]; then ./hugo fi
+
+after_success:
+  - if [[ $TRAVIS_PULL_REQUEST = false ]] && [[ $TRAVIS_BRANCH = master ]]; then ./deploy_ghpages.sh && (curl http://www.google.com/webmasters/tools/ping?sitemap=http%3A%2F%2Fekara-platform.github.io%2Fsitemap.xml > /dev/null || :); fi
