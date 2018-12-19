@@ -1,9 +1,3 @@
-#header-wrapper {
-    background: #b8e8ff;
-    border-bottom-color: #83dce8;
-
-}
-
 #header a {
     width: 100%;
     text-align: left;
@@ -15,13 +9,7 @@
 }
 
 #header a span {
-    color: #333;
     font-weight: 500;
     font-size: 40px;
     padding-left: 20px;
-}
-
-.searchbox {
-    background-color: #3cbac9;
-    border-color: #83dce8;
 }

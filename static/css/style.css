@@ -9,3 +9,8 @@ body {
     text-rendering: optimizeLegibility;
     font-kerning: normal;
 }
+
+.logo-main {
+    float: right;
+    margin: 0 !important;
+}

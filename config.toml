@@ -1,4 +1,35 @@
 baseURL = "http://ekara-platform.github.io/"
-languageCode = "en-us"
+languageCode = "en-US"
 title = "Ekara cloud platform"
 theme = "hugo-theme-learn"
+defaultContentLanguage = "en"
+metaDataFormat = "yaml"
+defaultContentLanguageInSubdir= true
+
+[params]
+editURL = "https://github.com/ekara-platform/website/edit/master/content/"
+description = "Documentation for the Ekara cloud platform"
+author = "The Ekara team"
+disableBreadcrumb = false
+disableNextPrev = false
+themeVariant = "blue"
+
+[outputs]
+home = [ "HTML", "RSS", "JSON"]
+
+[Languages]
+[Languages.en]
+title = "Documentation for the Ekara cloud platform"
+weight = 1
+languageName = "English"
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fab fa-fw fa-github'></i> Github"
+identifier = "ds"
+url = "https://github.com/ekara-platfor"
+weight = 10
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fas fa-fw fa-camera'></i> Showcases"
+url = "showcase"
+weight = 11
