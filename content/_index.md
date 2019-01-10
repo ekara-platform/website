@@ -6,9 +6,7 @@ title: Ekara
 
 ![Logo](/img/ekara_256px.png?classes=logo-main)
 
-**Ekara creates and maintain reproducible Docker environments, _from scratch_**.
-
-An Ekara environment is:
+**Ekara creates and maintain reproducible Docker environments, _from scratch_**. An Ekara environment is:
  
 * Self-contained and autonomous.
 * Manageable through a simple REST API.  
@@ -22,7 +20,8 @@ You interact with Ekara through its client binary. To download it:
 
 1. Go to https://github.com/ekara-platform/cli/releases
 2. Download the binary corresponding to your operating system
-3. Put the downloaded binary in a location referenced from your PATH environment variable.
+3. Put the downloaded binary in your favorite location and rename it to "ekara".
+4. Add the directory containing the executable to your PATH environment variable.
 
 {{% notice tip %}}
 You should now be able to run `ekara version` from the anywhere in the command-line.  
