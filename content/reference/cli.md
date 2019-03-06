@@ -6,11 +6,13 @@ The Ekara command-line interface (CLI) can be used to create new environments or
 
 ## Commands
 
-* **check** Validate an existing environment descriptor. 
-* **deploy** Deploy a new environment (validate descriptor, provision nodes, install orchestrator and deploy stacks).
-* **dump** Dump an existing environment descriptor. 
-* **help** Display a list of the available commands. 
-* **version** Display the Ekara version.
+* [**check**](#check) Validate an existing environment descriptor. 
+* [**deploy**](#deploy) Deploy a new environment (validate descriptor, provision nodes, install orchestrator and deploy stacks).
+  * [**deploy create-only**](#deploy-create-only) Create a new environment (validate descriptor and provision nodes).
+  * [**deploy install-only**](#deploy-install-only)  Install a new environment (validate descriptor, provision nodes and install orchestrator).
+* [**dump**](#dump) Dump an existing environment descriptor. 
+* [**help**](#help) Display a list of the available commands. 
+* [**version**](#version) Display the Ekara version.
 
 {{% notice tip %}}
 You can use the `-h or --help` option on any command to get further help.  
@@ -101,7 +103,64 @@ $ ekara deploy http://github.com/ekara-platform/demo --cert ./cert_location --ho
 ```
 
 
-******
+## Deploy Create Only
+
+This command creates a new environment based on the specified environment descriptor:
+
+The creation will:
+
+* Validate the environment descriptor.
+* Provision the nodes.
+
+```
+ekara deploy create-only <descriptor-repository-url> [flags]
+```
+
+{{% notice note %}}
+A running and properly configured Docker daemon is required to run this command. Docker environment will be picked up
+if any. You can also specify docker options directly on the command-line.
+{{% /notice %}}
+
+{{% notice info %}}
+Refer to the [**deploy**](#deploy) command for arguments and options details
+{{% /notice %}}
+
+Basic example:
+
+```
+$ ekara deploy create-only http://github.com/ekara-platform/demo
+```
+
+
+## Deploy Install Only
+
+This command installs a new environment based on the specified environment descriptor:
+
+The installation will:
+
+* Validate the environment descriptor.
+* Provision the nodes.
+* Install the orchestrator. 
+
+```
+ekara deploy install-only <descriptor-repository-url> [flags]
+```
+
+{{% notice note %}}
+A running and properly configured Docker daemon is required to run this command. Docker environment will be picked up
+if any. You can also specify docker options directly on the command-line.
+{{% /notice %}}
+
+{{% notice info %}}
+Refer to the [**deploy**](#deploy) command for arguments and options details
+{{% /notice %}}
+Basic example:
+
+```
+$ ekara deploy install-only http://github.com/ekara-platform/demo
+```
+
+
 
 ## Dump
 
