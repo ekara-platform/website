@@ -5,6 +5,9 @@
 .idea
 *.iml
 
+# Exe
+*.exe
+
 # generated folders
 public/
 dev/
