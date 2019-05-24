@@ -33,10 +33,10 @@ To use a given `tag` or a `branch` of your repository you need to postfix the ra
 
 
 ```
-# Using given tag of your repository
+# Using a given tag of your repository
 $ ekara deploy http://github.com/ekara-platform/demo@tag_name
 
-# Using given branch of your repository
+# Using a given branch of your repository
 $ ekara deploy http://github.com/ekara-platform/demo@branch_name
 ```
 
