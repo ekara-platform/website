@@ -18,6 +18,33 @@ The Ekara command-line interface (CLI) can be used to create new environments or
 You can use the `-h or --help` option on any command to get further help.  
 {{% /notice %}}
 
+#### Using tags or branches
+
+Some CLI commands take as argument the environment descriptor URI:
+
+Using a raw URI will result into fetching the `master branch` of the repository.
+
+```
+# Using the master branch
+$ ekara deploy http://github.com/ekara-platform/demo
+```
+
+To use a given `tag` or a `branch` of your repository you need to postfix the raw repository URI with `@tag_name` or `@branch_name`.
+
+
+```
+# Using given tag of your repository
+$ ekara deploy http://github.com/ekara-platform/demo@tag_name
+
+# Using given branch of your repository
+$ ekara deploy http://github.com/ekara-platform/demo@branch_name
+```
+
+{{% notice note %}}
+In the case of having both a `tag` and a `branch` with the same name, the Ekara installation process will look first for the `tag` and a then for the `branch`.
+{{% /notice %}}
+
+
 ## Check
 
 This command validates an environment descriptor:
