@@ -39,7 +39,7 @@ Main options:
 
 * `-d --descriptor <descriptor-file-name>` The name of the environment descriptor, if missing we will look for the defaulted one: `ekara.yaml`.
 * `-U --user <user-name>` The user to log into the descriptor repository.
-* `-P --PASSWORD <user-PASSWORD>` The password to log into the descriptor repository.
+* `-P --password <user-password>` The password to log into the descriptor repository.
 * `-p --param <param-file>` Location of the parameters file that will be substitutable in the descriptor.
 
 Docker options: 
@@ -76,7 +76,7 @@ Main options:
 
 * `-d --descriptor <descriptor-file-name>` The name of the environment descriptor, if missing we will look for the defaulted `ekara.yaml`.
 * `-U --user <user-name>` The user to log into the descriptor repository.
-* `-P --PASSWORD <user-PASSWORD>` The password to log into the descriptor repository.
+* `-P --password <user-password>` The password to log into the descriptor repository.
 * `-p --param <param-file>` Location of the parameters file that will be substitutable in the descriptor.
 * `-l --logs [installer-log]` Allows to turn on the installer logs. By default the logs will be written in a file namned `installer.log`, the file name can be controlled using `-L --log-file`. 
 * `-L --log-file [installer-log_file]` The log file name.
@@ -189,7 +189,7 @@ Main options:
 
 * `-d --descriptor <descriptor-file-name>` The name of the environment descriptor, if missing we will look for the defaulted `ekara.yaml`.
 * `-U --user <user-name>` The user to log into the descriptor repository.
-* `-P --PASSWORD <user-PASSWORD>` The password to log into the descriptor repository.
+* `-P --password <user-password>` The password to log into the descriptor repository.
 * `-p --param <param-file>` Location of the parameters file that will be substitutable in the descriptor.
 
 Docker options: 
