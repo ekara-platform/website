@@ -125,7 +125,7 @@ The `repository` attribute allows to specify the location of a component.
 The source control management repository wherein the component lives can be public or private.
 In the case of being private then [**Authentication**](#authentication) should be provided.
 
-{{% notice warning  %}}
+{{% notice warning %}}
 Currently `git` is the only source control management system supported.
 {{% /notice %}}
 
@@ -158,11 +158,11 @@ ekara:
         password: yourUserPassword
 ```
 
-{{% notice warning  %}}
+{{% notice warning %}}
 Currently `basic` is the only authentication method supported.
 {{% /notice %}}
 
-{{% notice tip  %}}
+{{% notice tip %}}
 If you don’t want to have data such as user names and passwords hardcoded, and the visible into a descriptor, you can pass them through template values. Please refer to the [**templating reference**]({{< ref "templating.md" >}}) for more details.
 {{% /notice %}}
 
@@ -172,19 +172,22 @@ If you don’t want to have data such as user names and passwords hardcoded, and
 An environment descriptor can defines variables, these variables are intended to be used in templates.
 
 TODO 
-- Vars name space
-- Vars precedence
-- Vars and general templating
+
+- Add Vars name space
+
+- Add Vars precedence
 
 ### Templates
 
 An environment descriptor can defines templates. 
 
-When templates are defined into a component then this component will no be use as is but it will be duplicated in order to be templated using the accumulation of all the `Vars` content of all descriptors and also the `param-file` given at runtime for example by the CLI or the running environment itself. 
+A template is a file who lives in the same source repository than the one holding the descriptor, it can be of any type. A template is identified by its relative path within the repository.
 
-Example of component with a docker-compose which should be templated: 
+When templates are defined into a component then this component will no be use as is but it will be duplicated in order to be templated using the accumulation of all the `Vars` content of all descriptors and also the `param-file` (See [**param-file**]({{< ref "param.md" >}}))  given at runtime for example by the CLI or the running environment itself. 
 
-This is the `docker-compose` where the templating must be applyed
+Example of component with a `docker-compose` file which should be templated before being deployed: 
+
+This is the `docker-compose` where the templating must be applied:
 ```yaml
 version: '3.7'
 
@@ -196,15 +199,21 @@ services:
     - "{{ .Vars.app.visualizer.port }}:8080"
 ```
 
-This is how the component will specifies, into its own escriptor, that one of its file must be templated.
+This is how the component will specifies, into its own escriptor, that one of its file must be templated:
 ```yaml
 templates:
   - "docker-compose.yml"
 ```
 
-{{% notice warning  %}}
+{{% notice warning %}}
 For performance reasons the templating mechanism will be applied only to the listed files, then if several files should be templated they all must be specified.
 {{% /notice %}}
+
+{{% notice tip %}}
+Template relative paths can be specified using [glob patterns](https://github.com/gobwas/glob). 
+{{% /notice %}}
+
+Please refer to the [**templating reference**]({{< ref "templating.md" >}}) for more details about the templating mechanism.
 
 ### Providers
 
