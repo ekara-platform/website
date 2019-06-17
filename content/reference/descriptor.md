@@ -169,7 +169,42 @@ If you don’t want to have data such as user names and passwords hardcoded, and
 
 ### Vars
 
+An environment descriptor can defines variables, these variables are intended to be used in templates.
+
+TODO 
+- Vars name space
+- Vars precedence
+- Vars and general templating
+
 ### Templates
+
+An environment descriptor can defines templates. 
+
+When templates are defined into a component then this component will no be use as is but it will be duplicated in order to be templated using the accumulation of all the `Vars` content of all descriptors and also the `param-file` given at runtime for example by the CLI or the running environment itself. 
+
+Example of component with a docker-compose which should be templated: 
+
+This is the `docker-compose` where the templating must be applyed
+```yaml
+version: '3.7'
+
+services:
+  vizualizer:
+    image: dockersamples/visualizer
+    ports:
+    # The following line will be updated by the templating mechanism
+    - "{{ .Vars.app.visualizer.port }}:8080"
+```
+
+This is how the component will specifies, into its own escriptor, that one of its file must be templated.
+```yaml
+templates:
+  - "docker-compose.yml"
+```
+
+{{% notice warning  %}}
+For performance reasons the templating mechanism will be applied only to the listed files, then if several files should be templated they all must be specified.
+{{% /notice %}}
 
 ### Providers
 
