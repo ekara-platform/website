@@ -11,13 +11,13 @@ The parameters file is used associated to a templating mechanism to modify the e
 The variables to substitute can be define anywhere into the environment descriptor using the following syntax:
 
 ```yaml
-{{ .key }}
+{{ .Vars.key }}
 ```
 
 Or
 
 ```yaml
-{{ .key1.key2.keyX }}
+{{ .Vars.key1.key2.keyX }}
 ```
 
 Multiple variables are allowed into a single line. 
@@ -26,11 +26,11 @@ Example:
 ```yaml
 #descriptor
 #....
-db_driver: jdbc:{{ .db.name }}:thin:@{{ .db.name }}.{{ .db.project.phase.host }}:1522:{{ .db.project.phase.service }}
+db_driver: jdbc:{{ .Vars.db.name }}:thin:@{{ .Vars.db.name }}.{{ .Vars.db.project.phase.host }}:1522:{{ .Vars.db.project.phase.service }}
 ```
 
 {{% notice warning %}}
-The variable must start with a `.`
+The variable must start with a `.Vars`
 {{% /notice %}}
 
 
@@ -42,7 +42,7 @@ This file can contain any valid **yaml** data.
 
 The flow blocks will be use to match the variable keys:
 
-In this example this parameter content will match the variable key **`{{ .a.b.c.d }}`**:
+In this example this parameter content will match the variable key **`{{ .Vars.a.b.c.d }}`**:
 
 
 ```yaml
@@ -62,7 +62,7 @@ testhook_post:
     component: distrib
     playbook: post-create.yml
     params:
-      my_secret_value: {{ .a.b.c.d }}
+      my_secret_value: {{ .Vars.a.b.c.d }}
 ```
 
 Will produce :
@@ -75,13 +75,3 @@ testhook_post:
     params:
       my_secret_value: my_value
 ```
-
-## Restriction
-
-
-### Spaces
-
-UTF8
-Spaces
-No complex structure allowed
-

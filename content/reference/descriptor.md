@@ -8,18 +8,22 @@ The Ekara descriptor is a YAML document fully describing an environment:
 * The **providers** where nodes will be provisioned,
 * The **orchestrator** that will manage the cluster of nodes,
 * The **stacks** to deploy on the cluster,
-* The **tasks** that can be run. 
+* The **tasks** that can be run on nodes. 
+
+{{% notice disclaimer %}}
+Into the whole Ekara documentation you will figure that the **Environment descriptor**, finally used to build and deploy an environment, is the result of the aggregation of several yaml descriptors. In order to simplify the understanding of those several decriptors interaction we will refer to this first descriptor as the **main Descriptor**, others descriptors will ne named **component Descriptor**
+{{% /notice %}}
 
 ## Location
 
-The default descriptor is a YAML file, named `ekara.yaml`, placed at the root level of a source repository:
+The main descriptor is a YAML file, named by default `ekara.yaml`, placed at the root level of a source repository:
 
 ```plain
 <root>
     |-- ekara.yaml
 ```
 
-Additional descriptor files can be created but they must be imported explicitly from the default one. 
+In opposition  to component descriptor the main descriptor is the only which can have a named different than `ekara.yaml`. In the case of a main descriptor named differently than `ekara.yaml` you would have to explicitly pass its name to Ekara commands which you invoke.
 
 ## Contents 
 
@@ -38,19 +42,7 @@ qualifier: dev
 descriptor: This is my awesome ekara environment. 
 ```
 
-These properties cannot be imported and are only taken into account in the main descriptor (see below).
-
-### Imports
-
-The `imports` section is an ordered list of other files to import: 
-
-```yaml
-imports:
-  - otherDescriptor1.yaml
-  - otherDescriptor2.yaml
-```
-
-Each import has priority over the descriptors it imports itself. The first descriptor of the import chain has the highest priority.
+These properties cannot be imported through a component descriptor and are only taken into account in the main descriptor (see below).
 
 ### Ekara platform
 
@@ -58,8 +50,8 @@ The `ekara` section controls the Ekara platform settings:
 
 ```yaml
 ekara:
-  # The base location used to resolve short repository names for the descriptor only
-  base: https://github.com
+  # The base location used across the environment descriptor
+  base: https://a.given.base.com
 
   # Specify the Ekara platform distribution to use
   distribution:
@@ -71,23 +63,113 @@ ekara:
     myComponent:
       repository: my-organization/my-component
       ref: v1.2.3
-      imports:
-        - additionalImport.yaml
 ```
 
-Ekara is based on the notion of **component**. A component lives in a source repository and is fetched by Ekara dynamically
-at startup. A component can contain a default descriptor that will be imported automatically if present but also additional
-descriptors that can be explicitly imported.
+Ekara is based on the notion of [**component**](#components). A component lives in a source repository and is fetched by Ekara dynamically at startup. 
+A component can contain a descriptor, always named `ekara.yaml`, if present this componnent descriptor will be imported automatically and merge into the main descriptor.
 
-The distribution is a special component that is automatically fetched and imported. Additional components are only declared
-in the `components` section but will only be fetched and imported upon effective use in the descriptor. 
+
+#### Base
+
+The base location is used to resolve short repository names for the descriptor only.
+
+Example: 
+```yaml
+ekara:
+  base: https://a.given.base.com
+
+  distribution:
+    repository: my-organization/distribution
+    
+  components:
+    myComponent:
+      repository: my-organization/my-component
+```
+
+Will result in using :
+
+- The distribution :  https://a.given.base.com/my-organization/distribution 
+- A component :  https://a.given.base.com/my-organization/my-component
+
+{{% notice tip %}}
+The base location is optional, if not provided then Ekara will automatically use `https://github.com` as base.
+{{% /notice %}}
+
+
+#### Distribution
+
+The distribution is a special component that is automatically fetched and imported. 
+
+
+{{% notice note %}}
+The distribution is optional, if not provided then Ekara will automatically import and use its [own distribution](https://github.com/ekara-platform/distribution). If you want to use your own custom distribution you just need to reference it through its repository.
+{{% /notice %}}
+
+#### Components
+
+Additional components are only declared in the `components` section but will only be fetched and imported upon effective use in the descriptor. 
 
 A component declaration consists in:
 
 * A `repository` attribute for the source repository holding component code,
 * A `ref` attribute for the branch, tag or commit of the component to fetch,
-* An `imports` attribute for the list of descriptors inside the component to explicitly import. If a component contains a
-default descriptor (named `ekara.yaml`) at its root, it is automatically imported.
+* A  `auth` attribute only required if the source repository is private
+
+If a component contains an `ekara.yaml` descriptor at its root, it will be automatically imported and merged into the main descriptor.
+
+
+##### Repository
+
+The `repository` attribute allows to specify the location of a component. 
+
+The source control management repository wherein the component lives can be public or private.
+In the case of being private then [**Authentication**](#authentication) should be provided.
+
+{{% notice warning  %}}
+Currently `git` is the only source control management system supported.
+{{% /notice %}}
+
+##### Ref
+
+The `ref` attibutes identifies the branch, tag or commit to fetch.
+
+When the `ref` is provided for a component Ekara will first try to fetch the matching **tag** and then the **branch**.
+
+{{% notice tip %}}
+The `ref` is optional, if not provided then Ekara will automatically fetch the **master**.
+{{% /notice %}}
+
+##### Authentication
+
+The `auth` attribute specifies the authentication information required to connect to a private repository.
+
+Example: 
+```yaml
+ekara:
+  components:
+    aPublicComponent:
+      repository: https://github.com/myOrganisation/my-public-rep
+    aPrivateComponent:
+      repository: https://github.com/myOrganisation/my-private-rep
+      ref: lagoon  
+      auth:
+        method: basic
+        user: yourUserName
+        password: yourUserPassword
+```
+
+{{% notice warning  %}}
+Currently `basic` is the only authentication method supported.
+{{% /notice %}}
+
+{{% notice tip  %}}
+If you don’t want to have data such as user names and passwords hardcoded, and the visible into a descriptor, you can pass them through template values. Please refer to the [**templating reference**]({{< ref "templating.md" >}}) for more details.
+{{% /notice %}}
+
+
+### Vars
+
+### Templates
 
 ### Providers
 
@@ -97,7 +179,7 @@ The `providers` section declares the cloud providers used by the environment:
 providers:
   aws:    
     # Name of the provider component 
-    component: aws-provider
+    component: ek-aws
     # Provider default parameters
     params: 
       region: eu-west-1
@@ -110,7 +192,7 @@ The `orchestrator` section declares the Docker orchestrator that will be used:
 ```yaml
 orchestrator:
   # Name of the orchestrator component
-  component: swarm-orchestrator
+  component: ek-swarm
   # Orchestrator default parameters 
   params:
     someSwarmParam: someValue
@@ -187,3 +269,4 @@ tasks:
 ### Hooks
 
 To be done...
+
