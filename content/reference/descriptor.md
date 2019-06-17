@@ -122,16 +122,33 @@ If a component contains an `ekara.yaml` descriptor at its root, it will be autom
 
 The `repository` attribute allows to specify the location of a component. 
 
+Example: 
+```yaml
+components:
+  aPublicComponent:
+    # The repository path can be absolute, or implicitly prefixed with the base location 
+    repository: https://github.com/myOrganisation/my-public-rep
+```
+
 The source control management repository wherein the component lives can be public or private.
 In the case of being private then [**Authentication**](#authentication) should be provided.
 
 {{% notice warning %}}
-Currently `git` is the only source control management system supported.
+Currently `git` is the only source control management system supported for repositories.
 {{% /notice %}}
 
 ##### Ref
 
 The `ref` attibutes identifies the branch, tag or commit to fetch.
+
+Example: 
+```yaml
+components:
+  aPublicComponent:
+    repository: https://github.com/myOrganisation/my-public-rep
+    # The desired tag, branch or raw reference
+    ref: aGivenBranch  
+```
 
 When the `ref` is provided for a component Ekara will first try to fetch the matching **tag** and then the **branch**.
 
@@ -151,7 +168,6 @@ ekara:
       repository: https://github.com/myOrganisation/my-public-rep
     aPrivateComponent:
       repository: https://github.com/myOrganisation/my-private-rep
-      ref: lagoon  
       auth:
         method: basic
         user: yourUserName
