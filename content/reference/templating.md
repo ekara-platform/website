@@ -109,8 +109,6 @@ To be done
 When templates are defined into a component then this component will no be use as is but it will be previously duplicated in order to be templated.
 
 
-
-
 [**test**]({{< ref "descriptor.md#templates" >}})
 
 
