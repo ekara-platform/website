@@ -68,7 +68,6 @@ ekara:
 Ekara is based on the notion of [**component**](#components). A component lives in a source repository and is fetched by Ekara dynamically at startup. 
 A component can contain a descriptor, always named `ekara.yaml`, if present this componnent descriptor will be imported automatically and merge into the main descriptor.
 
-
 #### Base
 
 The base location is used to resolve short repository names for the descriptor only.
@@ -187,19 +186,55 @@ If you don’t want to have data such as user names and passwords hardcoded, and
 
 An environment descriptor can defines variables, these variables are intended to be used in templates.
 
-TODO 
+Example: 
+```yaml
+vars:
+  var1_key: descriptor_var1_values 
+  var2_key: descriptor_var2_values 
+```
 
-- Add Vars name space
+#### Vars accumlation
+The variables used in templates are the accumulation of all the `vars` defined in all descriptors
 
-- Add Vars precedence
+The example bellow show an **Environment descriptor** and two **Component Descriptors** defining variables. 
+![Example image](/img/precedence.png)
+
+Based on this the variables usable into the templates will be: *key1*, *key2*, *key3* and *key4*
+
+The accumulation can also take in account an optional additional [**parameters file**]({{< ref "param.md" >}}) , in our example `CLI parameters`, given at runtime by the user through the Ekara CLI.
+
+Using this file, the variables usable into the templates will be: *key0*, *key1*, *key2*, *key3* and *key4*
+
+#### Vars precedence
+
+During the process of accumulation variables with a lower precedence will be overwritten by others having the same key with a higher precedence.
+
+{{% notice tip %}}
+The general rule defining precedence weight is: The farther you are from the **Environment descriptor** the lower is your precedence.
+{{% /notice %}}
+
+In our example the `component descriptor` has a lower precedence than the `distribution descriptor` which has itself a lower precedence than the `environment descriptor`, then : 
+
+- The `distribution descriptor` will overwrite *key1*, *key2* and *key3* defined into the `component descriptor` 
+- The `environment descriptor` will overwrite *key1* and *key3* defined into the `distribution descriptor` 
+- A special behaviour of the additional parameters file `CLI parameters` is that it has the highest precedence. This means that it will overwrite *key1* defined into the `environment descriptor` 
+
+In brief in our example the overall result the `vars` accumulation avaible into the templates will then be:
+
+```go
+  key0 = value0.from.cli
+  key1 = value1.from.cli
+  key2 = val2_distribution
+  key3 = val3_descriptor
+  key4 = val4_comp1
+```
+ 
 
 ### Templates
 
 An environment descriptor can defines templates. 
 
 A template is a file who lives in the same source repository than the one holding the descriptor, it can be of any type. A template is identified by its relative path within the repository.
-
-When templates are defined into a component then this component will no be use as is but it will be duplicated in order to be templated using the accumulation of all the `Vars` content of all descriptors and also the `param-file` (See [**param-file**]({{< ref "param.md" >}}))  given at runtime for example by the CLI or the running environment itself. 
 
 Example of component with a `docker-compose` file which should be templated before being deployed: 
 
@@ -289,6 +324,8 @@ nodes:
       docker:
         someDockerParam: otherValue
 ```
+
+TODO Add the special node set `_`
 
 ### Software stacks
 
