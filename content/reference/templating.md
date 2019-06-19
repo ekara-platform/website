@@ -23,7 +23,7 @@ In Ekara we distinguish two kind of templates:
 
 ## Data structure
 
-Into a template th top most variable of the data structure is access by `{{.}}`.
+Into a template the top most variable of the data structure is access by `{{.}}`.
 
 This means that all template annotations should start with a dot `.`
 
@@ -43,7 +43,7 @@ To be done
 
 #### `.Vars` 
 
-The `.Vars` section of the structure contains the accumulation of all the `Vars` defined in all descriptors and also the `param-file` (See [**param-file**]({{< ref "param.md" >}}))  given at runtime for example by the CLI or the running environment itself. 
+The `.Vars` section of the structure contains the accumulation of all the `Vars` defined in all descriptors and also the `param-file` given at runtime for example by the CLI or the running environment itself. See [**here**]({{< ref "descriptor.md#vars" >}}) the detail about how `Vars` are accumulated and eventually overwritten based on their precedence.
 
 Example :
 
@@ -97,12 +97,18 @@ To be done
 
 ## Template in descriptors
 
-Both **environment** or **component** descriptors are automatically process as templates.
+Both **environment** or **component** descriptors are automatically process as templates. 
 
-To be done
+### Content available in templated descriptors
+
+Because descriptors are processed sequentially at runtime they can only access to the `.Vars` previously parsed and processed.
+
+The example bellow shows how descriptors are sequentially processed and which `.Vars` are accessible by which descriptor. 
+![Example image](/img/sequence.png)
 
 - Dependency on the structure life cycle.
 
+### Content not available in templated descriptors
 
 ## Template in components
 

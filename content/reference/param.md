@@ -2,13 +2,12 @@
 title: Parameters File
 ---
 
-Some CLI commands accept the flag `-p, --param` to specify a **yaml** file used to pass parameters which will be interpreted at runtime to substitute variables into the environment descriptor.
+Some CLI commands accept the flag `-p, --param` to specify a **yaml** file used to pass parameters which will be interpreted at runtime to substitute variables into the templates.
 
-The parameters file is used associated to a templating mechanism to modify the environment descriptor at runtime.
 
 ## Variables definition
 
-The variables to substitute can be define anywhere into the environment descriptor using the following syntax:
+The variables to substitute can be define anywhere into the environment or component descriptors using the following syntax:
 
 ```yaml
 {{ .Vars.key }}

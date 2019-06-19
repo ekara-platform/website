@@ -4,9 +4,12 @@ title: Environment descriptor
 
 The Ekara descriptor is a YAML document fully describing an environment:
 
-* The **nodes** constituting the environment,
+* The **platform** TO BE DONE,
+* The **variables** TO BE DONE,
+* The **templates** TO BE DONE,
 * The **providers** where nodes will be provisioned,
 * The **orchestrator** that will manage the cluster of nodes,
+* The **nodes** constituting the environment,
 * The **stacks** to deploy on the cluster,
 * The **tasks** that can be run on nodes. 
 
@@ -196,7 +199,7 @@ vars:
 #### Vars accumlation
 The variables used in templates are the accumulation of all the `vars` defined in all descriptors
 
-The example bellow show an **Environment descriptor** and two **Component Descriptors** defining variables. 
+The example below shows an **Environment descriptor** and two **Component Descriptors** defining variables. 
 ![Example image](/img/precedence.png)
 
 Based on this the variables usable into the templates will be: *key1*, *key2*, *key3* and *key4*
