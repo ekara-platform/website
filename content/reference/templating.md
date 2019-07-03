@@ -30,20 +30,9 @@ This means that all template annotations should start with a dot `.`
 ### Structure content
 
 
-To be done
-
-- Structure creation lifecycle
-
-    - First CLI/runtime
-
-    - Then descriptor vars
-
-    - Then upper component vars.
-
-
 #### `.Vars` 
 
-The `.Vars` section of the structure contains the accumulation of all the `Vars` defined in all descriptors and also the `param-file` given at runtime for example by the CLI or the running environment itself. See [**here**]({{< ref "descriptor.md#vars" >}}) the detail about how `Vars` are accumulated and eventually overwritten based on their precedence.
+The `.Vars` section of the structure contains the accumulation of all the `vars` defined in all descriptors and also the `param-file` given at runtime for example by the CLI or the running environment itself. See [**here**]({{< ref "descriptor.md#vars" >}}) the detail about how `vars` are accumulated and eventually overwritten based on their precedence.
 
 Example :
 
@@ -90,10 +79,10 @@ The `.Model` section of the structure is not yet implemented.
 
 To be done
 
-- Reference on the exposed interface documentation
+- Reference on the exposed interface documentation (https://godoc.org/github.com/ekara-platform/model/tmodel)
+
 - Explanation on how access to the collection content ( with examples for providers and node sets...)
  
-
 
 ## Template in descriptors
 
@@ -101,18 +90,59 @@ Both **environment** or **component** descriptors are automatically process as t
 
 ### Content available in templated descriptors
 
-Because descriptors are processed sequentially at runtime they can only access to the `.Vars` previously parsed and processed.
+The `.Vars` section of the data structure is available as template values within descriptors.
 
-The example bellow shows how descriptors are sequentially processed and which `.Vars` are accessible by which descriptor. 
+Because the `.Vars` section of the data structure is populated sequentially based on the processing of all descriptors part of the environment a given descriptor can only access to:
+
+* the content of the the `param-file` given at runtime for example by the CLI or the running environment itself
+* the `vars` that it itself define 
+* the `vars` of other descriptors previously parsed and processed.
+
+The example bellow shows how descriptors are sequentially processed and which `vars` are accessible by which descriptor. 
 ![Example image](/img/sequence.png)
 
-- Dependency on the structure life cycle.
+This example shows one environment descriptor and tree component descriptors which will be parsed and processed following the bubbles order: **1**, **2**, **3** and finally **4**. 
+
+As previously said, because a descriptor can only use, the `param-file` content, its own `vars` and `vars` previously parsed and processed therefore each descriptor will have acces to:
+
+- **1** the environment descriptor has access to *key1* and *key2*
+- **2** the distribution descriptor has access to *key1*, *key2* and *key3*
+- **3** the core-stack descriptor has access to *key1*, *key2*, *key3* and *key4*
+- **4** the my_component descriptor has access to *key1*, *key2*, *key3*, *key4* and *key5*
+
+
+Base on our example the templated **Environment descriptor** could be:
+```yaml
+ekara:
+  base: someBase
+  distribution:
+    repository: ekara-platform/distribution
+  components:
+    my_component:
+      repository: ekara-platform/my_component    
+vars:
+  key2: value2				
+orchestrator:
+  component: my_component
+  params:
+    param_key1: {{ .Vars.key1 }}
+    param_key2: {{ .Vars.key2 }}
+```    
+
 
 ### Content not available in templated descriptors
+
+The `.Model` section of the data structure is **not** available as template value within descriptors.
+
+This is due to the fact that the environment to deploy will be completely built only when the last descriptor part of the environment has been parsed.
+
 
 ## Template in components
 
 When templates are defined into a component then this component will no be use as is but it will be previously duplicated in order to be templated.
+
+![Example image](/img/template-component.png)
+
 
 
 [**test**]({{< ref "descriptor.md#templates" >}})
