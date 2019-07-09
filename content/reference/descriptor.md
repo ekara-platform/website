@@ -362,10 +362,13 @@ stacks:
 
 The component referenced must contain:
  
-* A file recognized by the orchestrator to be a software stack (like a `docker-compose.yaml` file for Docker Swarm),
-* And/or an `install.yaml` playbook for custom deployment.
+* A file recognized by the orchestrator to be a software stack (like a `docker-compose.yml` file for Docker Swarm),
+* And/or an `install.yml` playbook for custom deployment.
 
-If the component containing the environment main descriptor is also a valid software stack it will be automatically deployed.
+{{% notice note %}}
+If both a `docker-compose.yml` file and an `install.yml` playbook are present into the component then the `install.yml` playbook will be used and the `docker-compose.yml` will be ignored.
+{{% /notice %}}
+
 
 ### Tasks
 
