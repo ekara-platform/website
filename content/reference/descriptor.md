@@ -334,11 +334,30 @@ TODO Add the special node set `*`
 
 The `stacks` section declares the software stacks that will be deployed in the environment:
 
+A software stack can be deployed using a `docker-compose.yml` or a playbook name `install.yml`
+
+
 ```yaml
 stacks:
   monitoring:
-    # Component containing the software stack
+    # Component containing docker-compose or the playbook
     component: prometheus-stack
+```
+
+When a software stack is located into the same repository than the descriptor where it's used then it can ommit the component into its definition
+
+```yaml
+stacks:
+  myStack:
+```
+ 
+Or if you prefer a clearer way to specify that the stack shares the descriptor location you can also use :
+
+```yaml
+stacks:
+  myStack:
+    # _ means that the component holding the stack is the one exposing the descriptor
+    component: _
 ```
 
 The component referenced must contain:
