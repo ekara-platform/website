@@ -328,7 +328,7 @@ nodes:
         someDockerParam: otherValue
 ```
 
-TODO Add the special node set `_`
+TODO Add the special node set `*`
 
 ### Software stacks
 
