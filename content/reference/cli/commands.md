@@ -1,10 +1,8 @@
 ---
-title: Command-line interface (CLI)
+title: Commands
 ---
 
-The Ekara command-line interface (CLI) can be used to create new environments or interact with existing ones. 
-
-## Commands
+List of available commands:
 
 * [**check**](#check) Validate an existing environment descriptor. 
 * [**deploy**](#deploy) Deploy a new environment (validate descriptor, provision nodes, install orchestrator and deploy stacks).
@@ -18,39 +16,12 @@ The Ekara command-line interface (CLI) can be used to create new environments or
 You can use the `-h or --help` option on any command to get further help.  
 {{% /notice %}}
 
-#### Using tags or branches
-
-Some CLI commands take as argument the environment descriptor URI:
-
-Using a raw URI will result into fetching the `master branch` of the repository.
-
-```
-# Using the master branch
-$ ekara deploy http://github.com/ekara-platform/demo
-```
-
-To use a given `tag` or a `branch` of your repository you need to postfix the raw repository URI with `@tag_name` or `@branch_name`.
-
-
-```
-# Using a given tag of your repository
-$ ekara deploy http://github.com/ekara-platform/demo@tag_name
-
-# Using a given branch of your repository
-$ ekara deploy http://github.com/ekara-platform/demo@branch_name
-```
-
-{{% notice note %}}
-In the case of having both a `tag` and a `branch` with the same name, the Ekara installation process will look first for the `tag` and a then for the `branch`.
-{{% /notice %}}
-
-
 ## Check
 
 This command validates an environment descriptor:
 
 ```
-ekara check <descriptor-repository-url> [flags]
+ekara check <repository-url> [flags]
 ```
 
 {{% notice note %}}
@@ -60,11 +31,11 @@ if any. You can also specify docker options directly on the command-line.
 
 Arguments:
 
-* `descriptor-repository-url`: the URL of the repository where the environment descriptor is located.
+* `repository-url`: the URL of the repository where the environment descriptor is located.
 
 Main options:
 
-* `-d --descriptor <descriptor-file-name>` The name of the environment descriptor, if missing we will look for the defaulted one: `ekara.yaml`.
+* `-d --descriptor <descriptor-file-name>` The name of the environment descriptor, if missing we will look for the default one: `ekara.yaml`.
 * `-U --user <user-name>` The user to log into the descriptor repository.
 * `-P --password <user-password>` The password to log into the descriptor repository.
 * `-p --param <param-file>` Location of the parameters file that will be substitutable in the descriptor.
@@ -82,12 +53,12 @@ This command deploys a new environment based on the specified environment descri
 The deployment will:
 
 * Validate the environment descriptor.
-* Provision the nodes.
+* Create the nodes.
 * Install the orchestrator. 
 * Deploy the stacks.
 
 ```
-ekara deploy <descriptor-repository-url> [flags]
+ekara deploy <repository-url> [flags]
 ```
 
 {{% notice note %}}
@@ -115,11 +86,6 @@ Docker options:
 * `-c --cert <path>` Location of the docker certificates (optional, can be substituted by the `DOCKER_CERT_PATH` environment variable) 
 * `-H --host <url>` URL of the docker host(optional, can be substituted by the `DOCKER_HOST` environment variable)
 
-Proxy options:
-
-* `--http-proxy <url>` HTTP proxy URL, can also be given by the `http_proxy` environment variable.
-* `--https-proxy <url>` HTTPS proxy URL, can also be given by the `https_proxy` environment variable.
-* `--no-proxy <list>` Comma-separated list of proxy exclusions, can also be given by the `no_proxy` environment variable.
 
 Basic example:
 
@@ -234,21 +200,8 @@ ekara help
 
 ## Version
 
-
 This command displays the versions of the command-line executable and the installer:
 
 ```
 ekara version
 ``` 
-
----------------------------------------------
-
-
-
-
-
-
-
-
-
-

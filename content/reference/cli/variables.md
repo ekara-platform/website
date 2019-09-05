@@ -1,8 +1,10 @@
 ---
-title: Parameters File
+title: External variables
 ---
 
-Some CLI commands accept the flag `-p, --param` to specify a **yaml** file used to pass parameters which will be interpreted at runtime to substitute variables into the templates.
+CLI commands working with a descriptor accept the `-p, --param`, which specifies the YAML to use as a source for external variables. Those variables can then be used in [templating]({{<ref "../environment/templating.md" >}})
+
+exte to specify a YAML file used to pass parameters which will be interpreted at runtime to substitute variables into the templates.
 
 
 ## Variables definition
