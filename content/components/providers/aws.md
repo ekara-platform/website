@@ -1,82 +1,186 @@
 ---
-title: AWS EC2 provider
+title: AWS provider
 ---
 
-The AWS EC2 provider enables you to provision Amazon Web-Services EC2 instances as environment nodes.<!--more-->
-When using the standard Ekara distribution, this provider is available as `aws` component.
+The AWS provider supports the creation and configuraton of Amazon Web-Services EC2 infrastructure to deploy Ekara environments.<!--more-->
+
+It can create and configure the following EC2 items:
+
+* Key pairs,
+* Security groups,
+* Placement groups,
+* Instances,
+* Elastic Block Storage (EBS) volumes.
+
+In addition it will also attach, format and mount EBS volumes on instances.
 
 {{% notice note %}}
-The component source can be found at https://github.com/ekara-platform/aws-provider.  
+When using the standard Ekara parent, this provider is configured with the `ek-aws` name.
 {{% /notice %}}
 
 ## Example
 
-The following Ekara descriptor provisions 3 small EC2 Ubuntu instances in the "eu-west-1" region and installs 
-Docker Swarm on it:
+The following Ekara descriptor provisions 3 small EC2 instances in the "eu-west-1" region:
 
-```yaml
-name: my-aws-test
+```
+name: myEnvironment
 
 ekara:
-  distribution:
-    repository: ekara-platform/distribution
+  parent:
+    repository: ekara-platform/parent
     ref: 1.0.0
 
-providers:
-  aws:
-    component: aws
-
-orchestrator:
-  component: swarm
-
 nodes:
-  main:
+  app:
     instances: 3
+    labels:
+      label1: value1
     provider:
-      name: aws
+      name: ek-aws
       params:
-        instance_type: "t2.micro"
-        ami_id: "ami-f90a4880"
-        region: "eu-west-1"
+        securityGroups:
+          app:
+            rules:
+              - proto: tcp
+                ports:
+                  - 8080
+                cidr_ip: 0.0.0.0/0
+                rule_desc: allow all on port 8080 for the application
+        instances:
+          instance_type: "t2.micro"
+        volumes:
+          docker:
+            ebs:
+              volume_size: 10
+              delete_on_termination: true
+              device_name: /dev/xvdf
+            fs:
+              mount_path: /var/lib/docker
 ```
 
-## Parameters
+On the infrastructure side, a `deploy` command with the descriptor above will:
 
-### Instance parameters
+* Ensure that one security group named `app` for the application exists, opening port 8080 to all IP addresses for TCP.
+* Ensure that 3 instances of type `t2.micro` exist, based on the default AMI (Ubuntu minimal 18.04 LTS).
+* Ensure that a 10 Go EBS volume named `docker` exist, formatted with the default filesystem (ext4) and mounted in `/var/lib/docker`.
+* Ensure that the instances and the volume are tagged with `ek_label_label1=value1`.
 
-All variables which can be overridden as in table below (under **params** tag).
+Beyond the items described above, inheriting the Ekara parent will also add some security groups for platform operation. 
 
-| Name           | Required | Default Value | Description                        |
-| -------------- | -------- | ------------- | -----------------------------------|
-| `instance_type` |  True |   | Instance type to use for the instance, see http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html |
-| `ami_id` |  True |  | AMI ID to use for the instance |
-| `vpc_id` |   |  | VPC ID to use for the security groups |
-| `vpc_subnet_id` |   |  | vpc_subnet ID to use for the instance |
-| `assign_public_ip` |   | True | when provisioning within vpc, assign a public IP address. Boto library must be 2.13.0+ |
-| `security_groups` |  |  | To define new security groups, see EC2 parameters for Security Groups |
-| `security_groups_ids` |  |  | List of existing security groups ids |
-| `instance_tags` |  |  | List of tags to add for the instance |
+## Reference
 
-
-### Security groups parameters 
+The following parameters are supported by the AWS provider (in the `params` element):
 
 | Name           | Required | Default Value | Description                        |
 | -------------- | -------- | ------------- | -----------------------------------|
-| `name` |  True |   | Security group's name |
-| `rules` |  True |  | See https://docs.ansible.com/ansible/latest/modules/ec2_group_module.html |
+| `placementGroup` |  False |  - | Parameters that will be passed to the Ansible `ec2_placement_group` module. |
+| `securityGroups` |  False |  - | A map defining the security groups to create. Key: placement group name. Value: parameters passed to the Ansible `ec2_group` module. |
+| `instances` |  True | - | Parameters that will be passed to the Ansible `ec2` module to create instance(s). |
+| `volumes` | False  | - | A map defining the volume(s) to create and attach. Key: volume name. Value: EBS parameters and filesystem parameters. |
 
+### Placement group
 
-### Volume parameters
+The `placementGroup` parameter correspond to the parameters of the [Ansible ec2_placement_group module](https://docs.ansible.com/ansible/latest/modules/ec2_placement_group_module.html). 
 
-| Name           | Required | Default Value | Description                        |
-| -------------- | -------- | ------------- | -----------------------------------|
-| `name` |  True |   | Mount point's name |
-| `device_name` |  | `params.device_name` | Machine's device name to mount |
-| `params` |  True |  | See https://docs.ansible.com/ansible/latest/modules/ec2_vol_module.html |
+The following parameters are set by default and **can** be overridden:
 
-### Placement group parameters 
+```
+name: "<environment_name>_<environment_qualifier>_pg"
+```
 
-| Name           | Required | Default Value | Description                        |
-| -------------- | -------- | ------------- | -----------------------------------|
-| `name` |  True |   | Placement Group's name |
-| `strategy` |  |  | See https://docs.ansible.com/ansible/latest/modules/ec2_placement_group_module.html |
+The following parameters are forcibly set and **cannot** be overriden:
+
+```
+region: "<provider_region>"
+state: "present"
+```
+
+### Security groups
+
+The `securityGroups` parameter is a map in which:
+
+* The key is the security group name
+* The value correspond to the parameters of the [Ansible ec2_group module](https://docs.ansible.com/ansible/latest/modules/ec2_group_module.html).
+
+The following parameters are set by default and **can** be overridden:
+
+```
+name: "<environment_name>_<environment_qualifier>_<security_group_name>"
+description: "Security group <security_group_name> for <environment_name>_<environment_qualifier>"
+```
+
+The following parameters are forcibly set and **cannot** be overriden:
+
+```
+region: "<provider_region>"
+state: "present"
+```
+
+### Instances
+
+The `instances` parameter correspond to the parameters of the [Ansible ec2 module](https://docs.ansible.com/ansible/latest/modules/ec2_module.html). 
+
+The following parameters are set by default and **can** be overridden:
+
+```
+instance_tags:
+    Name: "<environment_name> (<environment_qualifier>) - <nodeset_name>"
+```
+
+The following parameters are forcibly set and **cannot** be overriden:
+
+```
+key_name: "ek_<environment_name>_<environment_qualifier>",
+region: "<provider_region>",
+wait: true,
+exact_count: <nodeset_instance_count>,
+count_tag:
+  ek_nodeset_id: "<environment_name>_<environment_qualifier>_<nodeset_name>"
+instance_tags:
+  ek_env_id: "<environment_name>_<environment_qualifier>",
+  ek_nodeset_id: "<environment_name>_<environment_qualifier>_<nodeset_name>",
+  ek_nodeset_name: "<nodeset_name>"
+```
+
+If necessary, the name of the placement group is automatically injected into the instance settings as:
+
+```
+placement_group: "<placement_group_name>"
+```
+
+If necessary, the identifiers of the security group(s) are injected as:
+
+```
+group_id: [ "<sg1_id>", "<sg2_id>", ... ]
+```
+
+If necessary, the node set labels are injected as:
+
+```
+instance_tags:
+  ek_label_<label_name>: "<label_value>"
+  ...
+```
+
+### Volumes
+
+Elements under the `volumes` parameter correspond to a map in which:
+
+* The key is the volume name
+* The value is a map containing the following elements:
+  * `ebs` which correspond to the parameters of the [Ansible ec2_vol module](https://docs.ansible.com/ansible/latest/modules/ec2_vol_module.html).
+  * `fs` which correspond to the parameters of the [ekara-platform/ansible-role-filesystem role](https://github.com/ekara-platform/ansible-role-filesystem).
+
+The following parameters are set by default and **can** be overridden:
+
+```
+ebs:
+  volume_type: "gp2"
+```
+
+The following parameters are forcibly set and **cannot** be overriden:
+
+```
+ebs:
+  state: "present"
+```

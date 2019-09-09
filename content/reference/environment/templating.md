@@ -21,9 +21,9 @@ Templates are executed by applying them to a data structure, provided by Ekara. 
 
 The input text for a template is UTF-8-encoded text in any format. Actions (data evaluations or control structure) are delimited by `{{` and `}}`:
 
-{{< highlight yaml >}}
+```
 name: {{ .Vars.myProject.name }}
-{{< /highlight >}}
+```
 
 All text outside those delimiters is copied to the output unchanged. 
 
@@ -62,11 +62,11 @@ Accessing the meta-model during the construction of the model itself is limited.
 
 The descriptor is always templated but other files of a component can templated too. You can declare files to be templates like this:
 
-{{< highlight yaml >}}
+```
 templates:
   - docker-compose.yaml
   - config/**/*.cfg
-{{< /highlight >}}
+```
 
 Template paths must be relative to the descriptor file (i.e. the component root). [Glob patterns](https://github.com/gobwas/glob) can be used to match multiple files in a single expression. 
 
@@ -78,32 +78,32 @@ When templating additional files, all variables are available and meta-model fun
 
 Consider the following "variable file" passed from the command-line:
 
-{{< highlight yaml >}}
+```
 # Parameters file from the CLI
 app:
   a: cli_value
-{{< /highlight >}}
+```
 
 A parent defining the following variables:
 
-{{< highlight yaml >}}
+```
 # Variables in the parent descriptor
 vars:
   app:
     b: parent_{{ .Vars.app.a }}
     c: parent_value
-{{< /highlight >}}
+```
 
 And a main descriptor defining the following variables:
 
-{{< highlight yaml >}}
+```
 # Variables in the main descriptor
 name: myEnv
 qualifier: dev
 vars:
   app:
     d: main_{{ .Model.QualifiedName }}_{{ .Vars.app.b }}
-{{< /highlight >}}
+```
 
 Final values in the main descriptor will be:
 

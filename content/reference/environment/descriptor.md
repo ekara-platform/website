@@ -18,7 +18,7 @@ The Ekara descriptor is a YAML document consisting of the following top-level se
 
 The following properties define the basic information of the environment:
 
-{{< highlight yaml >}}
+```
 # Name of the environment (mandatory)
 name: myEnvironment
 
@@ -27,13 +27,13 @@ qualifier: dev
 
 # Optional description of the environment 
 descriptor: This is my awesome ekara environment. 
-{{< /highlight >}}
+```
 
 ## Ekara
 
 The `ekara` section controls the Ekara platform settings:
 
-{{< highlight yaml >}}
+```
 ekara:
   # The base location for short-form repositories
   base: https://github.com
@@ -48,7 +48,7 @@ ekara:
     myComponent:
       repository: my-organization/my-component
       ref: v2
-{{< /highlight >}}
+```
 
 {{% notice note %}}
 Read more about [how components are discovered and parsed]({{< ref "components.md" >}}).
@@ -58,7 +58,7 @@ Read more about [how components are discovered and parsed]({{< ref "components.m
 
 The base location is used to resolve short repository names for the descriptor only:
 
-{{< highlight yaml >}}
+```
 ekara:
   base: https://a.given.base.com
   parent:
@@ -66,7 +66,7 @@ ekara:
   components:
     myComponent:
       repository: my-organization/my-component
-{{< /highlight >}}
+```
 
 The declaration above will result in the following resolved URLs:
 
@@ -89,11 +89,11 @@ Additional components can be declared in the `components` section but will only 
 
 An environment descriptor can define variables, which can then be used in templating:
 
-{{< highlight yaml >}}
+```
 vars:
   var1_key: descriptor_var1_values 
   var2_key: descriptor_var2_values 
-{{< /highlight >}}
+```
 
 A variable can only be used in templating if it already has been declared in:
 
@@ -110,11 +110,11 @@ Variable precedence follow the [component precedence rules]({{< ref "components.
 
 Although the Ekara descriptor itself is always templated, if you want to template other files of the component you must declare them in the following section:
 
-{{< highlight yaml >}}
+```
 templates:
   - docker-compose.yaml
   - config/**/*.conf
-{{< /highlight >}}
+```
 
 Template paths must be relative to the descriptor file (i.e. the component root). [Glob patterns](https://github.com/gobwas/glob) can be used to match multiple files in a single expression.
 
@@ -126,7 +126,7 @@ Read more about [**templating**]({{< ref "templating.md" >}}) for more details.
 
 The `providers` section declares the cloud providers that can be used for creating node sets:
 
-{{< highlight yaml >}}
+```
 providers:
   ek-aws:    
     # Name of the provider component
@@ -134,13 +134,13 @@ providers:
     # Provider parameters applicable to all node sets (unless overridden)
     params: 
       region: eu-west-1
-{{< /highlight >}}
+```
 
 ## Orchestrator
 
 The `orchestrator` section declares the container orchestrator that will be installed: 
 
-{{< highlight yaml >}}
+```
 orchestrator:
   # Name of the orchestrator component
   component: ek-swarm
@@ -150,7 +150,7 @@ orchestrator:
   # Docker parameters applicable to all node sets
   docker:
     someParam: someValue
-{{< /highlight >}}
+```
 
 {{% notice tip %}}
 While the `params` section is used to configure the orchestrator, the `docker` section is used for Docker itself.
@@ -160,7 +160,7 @@ While the `params` section is used to configure the orchestrator, the `docker` s
 
 The `nodes` section declares the machines on which the environment will run, grouped by node sets:
 
-{{< highlight yaml >}}
+```
 nodes:
   managers:
     # Number of identical nodes in this node set
@@ -183,7 +183,7 @@ nodes:
       # Docker parameters for this node set (overriding general docker parameters)
       docker:
         someDockerParam: someValue
-{{< /highlight >}}
+```
 
 {{% notice tip %}}
 A special node set named `*` can be declared for parameters common to all nodesets.
@@ -193,12 +193,12 @@ A special node set named `*` can be declared for parameters common to all nodese
 
 The `stacks` section declares the software stacks that will be deployed in the environment:
 
-{{< highlight yaml >}}
+```
 stacks:
   myStack:
     # Component containing the software stack
     component: some-stack
-{{< /highlight >}}
+```
 
 The component referenced must contain:
  
@@ -209,7 +209,7 @@ The component referenced must contain:
 
 The `tasks` section declares the tasks that can be executed in the environment:
 
-{{< highlight yaml >}}
+```
 tasks:
   myTask:
     # The component containing the task
@@ -221,4 +221,4 @@ tasks:
       param1: value1
     # If specified the task will be executed automatically according to the specified schedule    
     cron: 0 * * * *
-{{< /highlight >}}
+```

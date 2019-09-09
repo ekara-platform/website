@@ -4,23 +4,32 @@ title: Command-line interface (CLI)
 
 The Ekara command-line interface (CLI) can be used to create new environments or interact with existing ones. 
 
-## General options
+## Commands
+
+The CLI tool accepts various commands. Learn about them [here]({{<ref "commands.md">}}).
+
+## Common options
 
 The following options are supported by all commands.
 
 Proxy options:
 
-* `--http-proxy <url>` HTTP proxy URL, can also be given by the `http_proxy` environment variable.
-* `--https-proxy <url>` HTTPS proxy URL, can also be given by the `https_proxy` environment variable.
-* `--no-proxy <list>` Comma-separated list of proxy exclusions, can also be given by the `no_proxy` environment variable.
+* `--http-proxy <url>`: HTTP proxy URL (defaults to the `http_proxy` environment variable if defined).
+* `--https-proxy <url>`: HTTPS proxy URL (defaults to the `https_proxy` environment variable if defined).
+* `--no-proxy <list>`: Comma-separated list of proxy exclusions (defaults to the `no_proxy` environment variable if defined).
 
-## 
+## Docker options
 
-## Using tags or branches
+Commands that interact directly with a Docker daemon (like `deploy`) accept the following options:
 
-Some CLI commands take as argument the environment descriptor URI:
+* `--docker-cert <path>`: Location of the docker certificates (defaults to the `DOCKER_CERT_PATH` environment variable if defined). **!! TODO !!**
+* `--docker-host <url>`: URL of the docker host (defaults to the `DOCKER_HOST` environment variable if defined). **!! TODO !!**
+* `--installer-tag <tag>`: allow to specify the tag of the installer Docker image to be used (defaults to `latest` otherwise). **!! TODO !!**
 
-Using a raw URI will result into fetching the `master branch` of the repository.
+## Repository URL (with tags and branches)
+
+Some commands take a repository URL as argument. This section details the syntax of this argument. The most basic form is a complete
+HTTP(S) repository URL:
 
 ```
 # Using the master branch
@@ -39,19 +48,5 @@ $ ekara deploy http://github.com/ekara-platform/demo@branch_name
 ```
 
 {{% notice note %}}
-In the case of having both a `tag` and a `branch` with the same name, the Ekara installation process will look first for the `tag` and a then for the `branch`.
+If you have the same name between a `tag` and a `branch`, the Ekara installation process will look first for the `tag` and a then for the `branch`.
 {{% /notice %}}
-
-
-
----------------------------------------------
-
-
-
-
-
-
-
-
-
-
